@@ -15,13 +15,30 @@ import pt from 'date-fns/locale/pt';
 
 import Dropzone from 'react-dropzone'
 
+import  socket  from 'socket.io-client';
+
 class Box extends Component {
     async componentDidMount(){
+        this.subscribeToNewFiles();
         const box = this.props.match.params.id;
 
         const response = await api.get(`/boxes/${box}`);
-        console.log(response.data.createdAt);
+        
         this.props.dispatch(actionCurrentBox.currentBox(response.data));
+    }
+
+    subscribeToNewFiles = () => {
+        const box = this.props.match.params.id;
+        const io = socket('https://omnistack6-api.herokuapp.com');
+
+        io.emit('connectRoom', box);
+
+        io.on('file', data => {
+            this.props.dispatch(actionCurrentBox.currentBox({
+                ...this.props.box,
+                files: [ data, ...this.props.box.files]
+            })); 
+        });
     }
 
     handleUpload = files => {

@@ -10,4 +10,9 @@ Curso Omni STack 6.0 da Rocketseat - Frontend
 # Redux
 - Foi utilizado redux para criar o box
 
+# Resultado
+
+- Principal
+![principal](https://image.prntscr.com/image/E3CepsX_R1ioRvDjofe5kA.png)
+
 
