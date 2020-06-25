@@ -13,7 +13,7 @@ import actionCurrentBox from '../../actions/actionCurrentBox';
 import {formatDistance, parseISO} from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-
+import Dropzone from 'react-dropzone'
 
 class Box extends Component {
     async componentDidMount(){
@@ -24,6 +24,17 @@ class Box extends Component {
         this.props.dispatch(actionCurrentBox.currentBox(response.data));
     }
 
+    handleUpload = files => {
+        const box = this.props.match.params.id;
+        files.forEach(file => {
+            const data = new FormData();
+
+            data.append('file', file);
+
+            api.post(`/boxes/${box}/files`, data);
+        })
+    }
+
     render() { 
         return (
             <div id="box-container">
@@ -32,14 +43,24 @@ class Box extends Component {
                     <h1>{this.props.box.title}</h1>
 
                 </header>
+                <Dropzone onDropAccepted={this.handleUpload}>
+                {({getRootProps, getInputProps}) => (
 
+                    <div className="upload" {...getRootProps()}>
+                        <input {...getInputProps()} />
+                        <p>Arraste arquivos ou clique aqui</p>
+                    </div>
+
+                )}
+                </Dropzone>
+                
                 <ul>
                     { this.props.box.files && this.props.box.files.map(file =>
                         (
-                        <li >
+                        <li key={file._id}>
                             <a className="fileInfo" href={file.url}>
                                 <MdInsertDriveFile size={24} color="#A5Cfff" />
-                                <strong>file.title</strong>
+                                <strong>{file.title}</strong>
                             </a>
                             <span>há {formatDistance(parseISO(file.createdAt), new Date(), {
                                 locale: pt
