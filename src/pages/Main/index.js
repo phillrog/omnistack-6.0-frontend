@@ -34,7 +34,7 @@ class Main extends Component {
                         placeholder="Criar um box"
                         value={this.props.newBox}
                     />
-                    {this.props.newBox}
+
                     <button type="submit">Criar</button> 
                 </form>
 

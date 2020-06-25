@@ -1,5 +1,7 @@
-# omnistack-6.0-frontend
-Curso Omni STack 6.0 da Rocketseat - Frontend
+# Curso Omni STack 6.0 da Rocketseat - Frontend
+
+[![CircleCI](https://circleci.com/gh/phillrog/omniStack-6.0-frontend.svg)](https://circleci.com/gh/phillrog/omniStack-6.0-frontend)
+
 
 - Foi aprendido a diferença entre componentes stateless e statefull onde o primeiro não possui estado já o segundo possui.
 
@@ -7,8 +9,23 @@ Curso Omni STack 6.0 da Rocketseat - Frontend
 
 - Foi aprendido a trabalhar com o react-dropzone bibliotca para arrastar arquivos
 
-# Redux
 - Foi utilizado redux para criar o box
+
+# PORTAL
+
+Este é o portal do curso
+
+# Como rodar local
+
+Execute: ```docker-compose up --build```
+
+# Heroku
+
+https://omnistack6-portal.herokuapp.com/
+
+# API
+
+A API está no repositório [https://github.com/phillrog/omnistack-6-backend](https://github.com/phillrog/omnistack-6-backend)
 
 # Resultado
 
