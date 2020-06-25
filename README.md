@@ -1,6 +1,6 @@
 # Curso Omni STack 6.0 da Rocketseat - Frontend
 
-[![CircleCI](https://circleci.com/gh/phillrog/omniStack-6.0-frontend.svg)](https://circleci.com/gh/phillrog/omniStack-6.0-frontend)
+[![CircleCI](https://circleci.com/gh/phillrog/omnistack-6.0-frontend.svg)](https://circleci.com/gh/phillrog/omnistack-6.0-frontend)
 
 
 - Foi aprendido a diferença entre componentes stateless e statefull onde o primeiro não possui estado já o segundo possui.
