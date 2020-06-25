@@ -10,12 +10,17 @@ import api from '../../services/api';
 import { connect } from 'react-redux';
 import actionCurrentBox from '../../actions/actionCurrentBox';
 
+import {formatDistance, parseISO} from 'date-fns';
+import pt from 'date-fns/locale/pt';
+
+
+
 class Box extends Component {
     async componentDidMount(){
         const box = this.props.match.params.id;
 
         const response = await api.get(`/boxes/${box}`);
-
+        console.log(response.data.createdAt);
         this.props.dispatch(actionCurrentBox.currentBox(response.data));
     }
 
@@ -29,25 +34,21 @@ class Box extends Component {
                 </header>
 
                 <ul>
-                    <li >
-                        <a className="fileInfo" href="">
-                            <MdInsertDriveFile size={24} color="#A5Cfff" />
-                            <strong>Desafio.pdf</strong>
-                        </a>
-                        <span>há 3 minutos atrás</span>
-                    </li><li>
-                        <a className="fileInfo" href="">
-                            <MdInsertDriveFile size={24} color="#A5Cfff" />
-                            <strong>Desafio.pdf</strong>
-                        </a>
-                        <span>há 3 minutos atrás</span>
-                    </li><li>
-                        <a  className="fileInfo" href="">
-                            <MdInsertDriveFile size={24} color="#A5Cfff" />
-                            <strong>Desafio.pdf</strong>
-                        </a>
-                        <span>há 3 minutos atrás</span>
-                    </li>
+                    { this.props.box.files && this.props.box.files.map(file =>
+                        (
+                        <li >
+                            <a className="fileInfo" href={file.url}>
+                                <MdInsertDriveFile size={24} color="#A5Cfff" />
+                                <strong>file.title</strong>
+                            </a>
+                            <span>há {formatDistance(parseISO(file.createdAt), new Date(), {
+                                locale: pt
+                            })}</span>
+                        </li>
+                        )    
+                    )
+                    }
+                    
 
                 </ul>
             </div>    
