@@ -16,7 +16,7 @@ class Main extends Component {
             title: this.props.newBox
         });
 
-        console.log(response.data);
+        this.props.history.push(`/box/${response.data._id}`);
     }
 
     handleInputChange = ( e) => {
