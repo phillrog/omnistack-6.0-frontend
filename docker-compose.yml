@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+
+  omnistack6-portal:
+    image: phillrog/omnistack6-portal:prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+    networks:
+      - tweets-net
+    volumes:
+      - ./build:/usr/share/nginx/html
+    healthcheck:
+      test: 'curl -s https://localhost:4001/ >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi'
+      interval: 30s
+      timeout: 10s
+      retries: 5    
+    command: /bin/sh -c "envsubst < /etc/nginx/conf.d/site.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+  
+networks:
+  tweets-net:
+    driver: bridge

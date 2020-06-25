@@ -1,0 +1,83 @@
+version: 2.1
+
+jobs:
+  build_deploy_portal:
+    docker:
+      - image: circleci/node:latest
+        user: root
+    working_directory: ~/api
+    steps:
+      - checkout
+      - run:
+            name: Update to latest npm version
+            command: "sudo npm install -g npm@latest"
+      - run:
+            name: Install dependencies
+            command: npm install    
+      - run: bash ./setup-heroku.sh        
+      
+      - setup_remote_docker
+
+      - run:
+            name: Install Docker client
+            command: |
+              set -x
+              VER="17.03.0-ce"
+              curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+              tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+              mv /tmp/docker/* /usr/bin
+
+      - run:
+            name: Install Docker Compose
+            command: |
+              set -x
+              curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose    
+            
+      - run: bash ./setup-heroku.sh
+
+      - run:
+            name: Build using `docker-compose`
+            command: |
+              docker-compose -f docker-compose.yml build
+
+      - add_ssh_keys:
+                      fingerprints:
+                        - $HEROKU_SSH_FINGERPRINT
+
+      - run:
+            name: Generate tag
+            command: |
+              docker tag $HEROKU_USER/$HEROKU_APP_NAME:prod registry.heroku.com/$HEROKU_APP_NAME/web            
+              
+
+      - deploy:
+              name: Deploy to Heroku if tests pass and branch is master
+              command: |
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  
+                  docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+
+                  docker push  registry.heroku.com/$HEROKU_APP_NAME/web
+
+                  docker run --rm -e HEROKU_API_KEY=$HEROKU_API_KEY wingrunr21/alpine-heroku-cli container:release web --app $HEROKU_APP_NAME
+                fi
+
+      - run:
+            name: Creating Dummy Artifacts
+            command: |
+              ls > /tmp/artifact-1;
+              mkdir /tmp/artifacts;
+              ls > /tmp/artifacts/artifact-2;
+
+      - store_artifacts:
+            path: /tmp/artifact-1
+            destination: artifact-file
+
+      - store_artifacts:
+            path: /tmp/artifacts
+workflows:
+  build_and_test:
+    jobs:
+      - build_deploy_portal
+
